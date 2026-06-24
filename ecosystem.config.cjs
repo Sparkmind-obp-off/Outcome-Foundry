@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'obp-checkout',
       script: 'npx',
-      args: 'wrangler pages dev dist --d1=obp-checkout-production --local --ip 0.0.0.0 --port 3000',
+      args: 'wrangler pages dev dist --d1=outcome-foundry-production --local --ip 0.0.0.0 --port 3000',
       cwd: '/home/user/webapp',
       env: {
         NODE_ENV: 'development',

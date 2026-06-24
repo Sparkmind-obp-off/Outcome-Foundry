@@ -69,10 +69,14 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 ```
 
 ## Deployment
-- **Platform**: Cloudflare Pages (edge-native).
-- **Status**: ✅ Built & tested locally (build hijau ~90 kB, semua route 200). Siap deploy (BYOK).
+- **Platform**: Cloudflare Pages (edge-native, BYOK — akun CF sendiri).
+- **Status**: ✅ **LIVE in production**. Build hijau (~90 kB), semua route 200, secrets terpasang,
+  D1 remote migrated + seeded (6 sub-brand), Duitku production diuji **end-to-end live** (invoice
+  real `BK-…` + reference Duitku `D20919…`).
+- **Production URL**: https://outcome-foundry-7vr.pages.dev
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
-- **GitHub**: https://github.com/Sparkmind-obp-off/OBP-Checkout-Orchestration
+- **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
+- **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
 - **Last Updated**: 2026-06-24
 
 ## Canonical Docs (SSOT)
@@ -86,4 +90,4 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **R6-5**: Channel seat/sponsor (Founder Pass multi-seat, tier sponsor).
 - Rate-limit `/api/invoices`, fan-out retry queue, settlement/reconciliation harian + brand ledger.
 - Real sub-brand webhook endpoints (saat ini demo domain → 404 saat fan-out).
-- Production secrets via `wrangler pages secret put` + D1 remote migration.
+- Custom domain (mis. `pay.oasis-bi-pro.web.id`) via `wrangler pages domain add`.

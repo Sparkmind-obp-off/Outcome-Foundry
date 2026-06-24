@@ -6,15 +6,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:sandbox": "wrangler pages dev dist --d1=obp-checkout-production --local --ip 0.0.0.0 --port 3000",
+    "dev:sandbox": "wrangler pages dev dist --d1=outcome-foundry-production --local --ip 0.0.0.0 --port 3000",
     "build": "vite build",
     "preview": "wrangler pages dev dist",
     "deploy": "npm run build && wrangler pages deploy dist",
     "deploy:prod": "npm run build && wrangler pages deploy dist --project-name obp-checkout-orchestration",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "db:migrate:local": "wrangler d1 migrations apply obp-checkout-production --local",
-    "db:migrate:prod": "wrangler d1 migrations apply obp-checkout-production",
-    "db:seed": "wrangler d1 execute obp-checkout-production --local --file=./seed.sql",
+    "db:migrate:local": "wrangler d1 migrations apply outcome-foundry-production --local",
+    "db:migrate:prod": "wrangler d1 migrations apply outcome-foundry-production",
+    "db:seed": "wrangler d1 execute outcome-foundry-production --local --file=./seed.sql",
     "db:reset": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate:local && npm run db:seed"
   },
   "dependencies": {
