@@ -34,6 +34,7 @@ export const renderer = jsxRenderer(({ children, title }: { children?: any; titl
             <div class="flex items-center gap-1 text-sm">
               <a href="/foundry" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Katalog</a>
               <a href="/pricing" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Harga</a>
+              <a href="/security-audit" class="hidden sm:inline px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">AgentShield</a>
               <a href="/about" class="hidden sm:inline px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Tentang</a>
               <a href="/checkout" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Checkout</a>
             </div>
@@ -48,6 +49,7 @@ export const renderer = jsxRenderer(({ children, title }: { children?: any; titl
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
               <a href="/about" class="hover:text-amber-300">Tentang</a>
               <a href="/pricing" class="hover:text-amber-300">Harga</a>
+              <a href="/security-audit" class="hover:text-amber-300">AgentShield</a>
               <a href="/legal" class="hover:text-amber-300">Ketentuan &amp; Privasi</a>
               <span class="inline-flex items-center gap-1 text-slate-400">
                 <i class="fas fa-shield-halved text-amber-400/80"></i> Pembayaran aman · QRIS/VA · terdaftar BI

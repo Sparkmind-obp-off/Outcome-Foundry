@@ -16,6 +16,8 @@
 - ✅ **Checkout MoR** `/checkout` dengan **pre-fill via `?offer=`** + **intake panel** (HITL) untuk high-ticket.
 - ✅ **Dashboard admin read-only** `/admin` — invoice, callback Duitku, fan-out log + stat cards.
 - ✅ **API observability** `/api/stats` + `/api/offers`.
+- ✅ **R6-4 Sovereign AgentShield** `/security-audit` — landing + metodologi audit prompt-injection +
+  form intake (lead → D1 `leads`, tanpa payment) + template laporan (`docs/ssot/standards/R6-4-AGENTSHIELD-REPORT-TEMPLATE.md`).
 - ✅ **Engine MoR** (existing): create invoice via Duitku POP, callback fan-out HMAC-signed.
 - ✅ **Replay protection** (nonce + `is_replay`) → callback otentik diproses sekali (idempoten).
 - ✅ **Status mapping** Duitku resultCode `00=paid · 01=failed · 02=pending` eksplisit.
@@ -26,6 +28,7 @@
 |---|---|---|
 | GET | `/` | Home — narasi Outcome Foundry + outcome unggulan |
 | GET | `/foundry` | Katalog outcome (per tier) |
+| GET | `/security-audit` | Sovereign AgentShield — landing + form intake audit keamanan |
 | GET | `/checkout?offer={slug}&mode={instant\|intake}` | Checkout MoR (pre-fill offer) |
 | GET | `/admin` | Dashboard read-only |
 | GET | `/payment/return?order={merchantOrderId}` | Status pembayaran (polling) |
@@ -33,6 +36,7 @@
 | GET | `/api/offers` | Katalog SKU (JSON) |
 | GET | `/api/stats` | Ringkasan + invoice/callback/fan-out terbaru (JSON) |
 | GET | `/api/sub-brands` | Daftar sub-brand aktif |
+| POST | `/api/leads` | Simpan lead intake AgentShield (`{name, contact, company?, surfaces[], message?}`) → tabel `leads` |
 | POST | `/api/invoices` | Buat invoice (`{sub_brand_id, amount_idr, product_details, customer{}}`, header `Idempotency-Key`) |
 | GET | `/api/invoices/:orderId` | Status invoice |
 | POST | `/webhooks/duitku` | Callback Duitku (form-urlencoded, HMAC + replay-protected) |
@@ -40,7 +44,8 @@
 ## Data Architecture
 - **Storage**: Cloudflare **D1** (SQLite). Katalog SKU = kode (`src/data/offers.ts`).
 - **Tables**: `sub_brands` (prefix routing), `invoices` (invoice MoR), `callbacks`
-  (audit + `nonce` + `is_replay`), `fanout_log` (OBP → sub-brand delivery).
+  (audit + `nonce` + `is_replay`), `fanout_log` (OBP → sub-brand delivery),
+  `leads` (intake AgentShield R6-4 — additive, migration `0003`, tanpa payment).
 - **Routing key**: `merchantOrderId = {PREFIX}-{ts}-{rand}` → prefix → sub-brand → fan-out.
 
 ## Configuration (secrets — never committed)
@@ -79,7 +84,7 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-07-01 (Re-deploy produksi CF Pages BYOK + re-set secrets Duitku production `D20919` → `configured:true`; build hijau 103.75 kB; semua route + 2 custom domain live 200; D1 remote termigrasi & seeded 6 sub-brand + 15 SKU; HANDOFF-05)
+- **Last Updated**: 2026-07-01 (R6-4 Sovereign AgentShield `/security-audit` live: landing + metodologi + intake `/api/leads` → tabel `leads` (migration 0003, local+remote termigrasi) + template laporan audit; build hijau 112.85 kB, `tsc` 0 error; deploy CF Pages BYOK + verify live end-to-end; HANDOFF-05)
 
 ## Canonical Docs (SSOT)
 **Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
@@ -124,7 +129,7 @@ python3 docs/ssot/foundry-master/resume_boot.py --check-live
 
 ## Not Yet Implemented / Next Steps (Batch 8 R6)
 - **R6-3**: Eval loop — trace (D1) → verifier → playbook (proof-of-outcome). *Spec siap, HITL schema.*
-- **R6-4**: Halaman `/security-audit` + template laporan untuk SKU **Sovereign AgentShield** (sudah di katalog).
+- ~~**R6-4**: Halaman `/security-audit` + template laporan untuk SKU **Sovereign AgentShield**~~ ✅ **DONE** (HANDOFF-05: page + intake `/api/leads` + tabel `leads` + template laporan; live). Sisa: pricing final + review legal = **HITL owner**.
 - **R6-5**: Channel seat/sponsor (Founder Pass multi-seat, tier sponsor).
 - Rate-limit `/api/invoices`, fan-out retry queue, settlement/reconciliation harian + brand ledger.
 - Real sub-brand webhook endpoints (saat ini demo domain → 404 saat fan-out).

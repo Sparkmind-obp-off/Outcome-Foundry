@@ -14,6 +14,7 @@ import { AdminDashboard } from './views/admin'
 import { AboutPage } from './views/about'
 import { LegalPage } from './views/legal'
 import { PricingPage } from './views/pricing'
+import { SecurityAuditPage } from './views/security-audit'
 import { OFFERS } from './data/offers'
 
 type Bindings = {
@@ -387,6 +388,12 @@ app.get('/pricing', (c) => {
   return c.render(<PricingPage />, { title: 'Harga · Outcome Foundry' })
 })
 
+// R6-4 — Sovereign AgentShield security audit (landing + intake).
+// SSR page; intake persists to `leads` (migration 0003). No payment/Duitku.
+app.get('/security-audit', (c) => {
+  return c.render(<SecurityAuditPage />, { title: 'Sovereign AgentShield · Audit Keamanan Agent' })
+})
+
 // robots.txt — arahkan crawler + tunjuk sitemap
 app.get('/robots.txt', (c) => {
   const base = obpBaseUrl(c.env, c.req.url)
@@ -402,7 +409,7 @@ Sitemap: ${base}/sitemap.xml
 // sitemap.xml — hanya route publik nyata (Truth-Lock: bukan klaim route yang tak ada)
 app.get('/sitemap.xml', (c) => {
   const base = obpBaseUrl(c.env, c.req.url)
-  const paths = ['/', '/foundry', '/pricing', '/checkout', '/about', '/legal']
+  const paths = ['/', '/foundry', '/pricing', '/security-audit', '/checkout', '/about', '/legal']
   const urls = paths
     .map((p) => `  <url><loc>${base}${p}</loc></url>`)
     .join('\n')
@@ -419,6 +426,48 @@ ${urls}
 // ===========================================================================
 app.get('/api/offers', (c) => {
   return c.json({ offers: OFFERS })
+})
+
+// ===========================================================================
+// API: leads (R6-4 AgentShield intake) — capture only, NO payment/Duitku.
+// Persists to `leads` (migration 0003). Additive; does not touch MoR engine.
+// ===========================================================================
+app.post('/api/leads', async (c) => {
+  let body: any
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ ok: false, error: 'Body JSON tidak valid.' }, 400)
+  }
+
+  const name = (body?.name ?? '').toString().trim()
+  const contact = (body?.contact ?? '').toString().trim()
+  if (!name || !contact) {
+    return c.json({ ok: false, error: 'Nama dan kontak wajib diisi.' }, 400)
+  }
+
+  // Whitelist source; default to security-audit funnel.
+  const allowedSources = ['security-audit']
+  const source = allowedSources.includes((body?.source ?? '').toString())
+    ? body.source.toString()
+    : 'security-audit'
+
+  const company = (body?.company ?? '').toString().trim() || null
+  const message = (body?.message ?? '').toString().trim() || null
+  const surfaces = Array.isArray(body?.surfaces)
+    ? body.surfaces.map((s: any) => s.toString().trim()).filter(Boolean).join(',') || null
+    : null
+
+  try {
+    const res = await c.env.DB.prepare(
+      `INSERT INTO leads (source, name, contact, company, surfaces, message)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    ).bind(source, name.slice(0, 200), contact.slice(0, 200), company, surfaces, message).run()
+
+    return c.json({ ok: true, id: res.meta.last_row_id }, 201)
+  } catch (err) {
+    return c.json({ ok: false, error: 'Gagal menyimpan lead.' }, 500)
+  }
 })
 
 // ===========================================================================
