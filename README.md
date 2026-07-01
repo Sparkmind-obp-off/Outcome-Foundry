@@ -70,14 +70,16 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 
 ## Deployment
 - **Platform**: Cloudflare Pages (edge-native, BYOK — akun CF sendiri).
-- **Status**: ✅ **LIVE in production**. Build hijau (~90 kB), semua route 200, secrets terpasang,
-  D1 remote migrated + seeded (6 sub-brand), Duitku production diuji **end-to-end live** (invoice
-  real `BK-…` + reference Duitku `D20919…`).
+- **Status**: ✅ **LIVE in production**. Build hijau (103.75 kB), semua route 200, secrets Duitku
+  terpasang (`configured:true`, `duitku_env:production`), D1 remote migrated. Redeploy dilakukan
+  setelah `secret put` agar secrets aktif. **Catatan (Truth-Lock):** `configured:true` = kredensial
+  ADA; uji transaksi end-to-end (real invoice + callback HMAC) = QA payment berikutnya (HITL owner).
 - **Production URL**: https://outcome-foundry-7vr.pages.dev
+- **Custom domain**: https://outcome-foundry.biz.id · https://outcome-foundry.sparkmind-obp.biz.id
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-07-01 (CT-1..CT-4 resolved: notFound/onError + `/about` `/legal` `/pricing` + `/robots.txt` `/sitemap.xml`; renderer typing fixed → build hijau + `tsc` 0 error)
+- **Last Updated**: 2026-07-01 (Deploy produksi CF Pages BYOK + set secrets Duitku production → `configured:true`; semua route live 200 + custom domain aktif; HANDOFF-04)
 
 ## Canonical Docs (SSOT)
 **Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
