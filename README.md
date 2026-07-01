@@ -79,7 +79,7 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-07-01 (Deploy produksi CF Pages BYOK + set secrets Duitku production → `configured:true`; semua route live 200 + custom domain aktif; HANDOFF-04)
+- **Last Updated**: 2026-07-01 (Re-deploy produksi CF Pages BYOK + re-set secrets Duitku production `D20919` → `configured:true`; build hijau 103.75 kB; semua route + 2 custom domain live 200; D1 remote termigrasi & seeded 6 sub-brand + 15 SKU; HANDOFF-05)
 
 ## Canonical Docs (SSOT)
 **Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
