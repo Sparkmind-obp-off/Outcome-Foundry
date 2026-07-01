@@ -14,8 +14,9 @@
 - ✅ **Re-brand UI** → "SparkMind X · Outcome Foundry" (nav + footer + home), OBP sebagai MoR rail.
 - ✅ **Katalog outcome** `/foundry` — 15 SKU, 5 tier (vertical / subscription / high-ticket / education / developer).
 - ✅ **Checkout MoR** `/checkout` dengan **pre-fill via `?offer=`** + **intake panel** (HITL) untuk high-ticket.
-- ✅ **Dashboard admin read-only** `/admin` — invoice, callback Duitku, fan-out log + stat cards.
-- ✅ **API observability** `/api/stats` + `/api/offers`.
+- ✅ **Dashboard admin read-only** `/admin` — invoice, callback Duitku, fan-out log + stat cards
+  + **Leads AgentShield** (R6-5): tabel intake `/security-audit` (nama/kontak/perusahaan/surfaces/status/waktu) untuk follow-up.
+- ✅ **API observability** `/api/stats` (kini termasuk `recent_leads`) + `/api/offers`.
 - ✅ **R6-4 Sovereign AgentShield** `/security-audit` — landing + metodologi audit prompt-injection +
   form intake (lead → D1 `leads`, tanpa payment) + template laporan (`docs/ssot/standards/R6-4-AGENTSHIELD-REPORT-TEMPLATE.md`).
 - ✅ **Engine MoR** (existing): create invoice via Duitku POP, callback fan-out HMAC-signed.
@@ -34,7 +35,7 @@
 | GET | `/payment/return?order={merchantOrderId}` | Status pembayaran (polling) |
 | GET | `/api/health` | Health check |
 | GET | `/api/offers` | Katalog SKU (JSON) |
-| GET | `/api/stats` | Ringkasan + invoice/callback/fan-out terbaru (JSON) |
+| GET | `/api/stats` | Ringkasan + invoice/callback/fan-out + **leads AgentShield** terbaru (JSON) |
 | GET | `/api/sub-brands` | Daftar sub-brand aktif |
 | POST | `/api/leads` | Simpan lead intake AgentShield (`{name, contact, company?, surfaces[], message?}`) → tabel `leads` |
 | POST | `/api/invoices` | Buat invoice (`{sub_brand_id, amount_idr, product_details, customer{}}`, header `Idempotency-Key`) |

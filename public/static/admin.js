@@ -6,7 +6,10 @@ function fmtIdr(n) {
 function statusBadge(s) {
   const map = {
     paid: 'text-emerald-400', pending: 'text-amber-300',
-    failed: 'text-rose-400', expired: 'text-slate-500', refunded: 'text-sky-400'
+    failed: 'text-rose-400', expired: 'text-slate-500', refunded: 'text-sky-400',
+    // lead lifecycle statuses
+    new: 'text-amber-300', contacted: 'text-sky-400',
+    qualified: 'text-emerald-400', closed: 'text-slate-500'
   }
   return '<span class="' + (map[s] || 'text-slate-300') + '">' + (s || '—') + '</span>'
 }
@@ -58,6 +61,21 @@ async function loadStats() {
           '<td class="pr-2">' + (x.delivered ? '<span class="text-emerald-400">✓</span>' : '<span class="text-rose-400">✗</span>') + '</td>' +
           '<td class="pr-2 text-slate-500">' + esc(x.created_at) + '</td></tr>').join('')
       : '<tr><td colspan="6" class="py-3 text-slate-500">Belum ada fan-out.</td></tr>'
+
+    // Leads AgentShield (R6-4 intake)
+    const leadsEl = document.getElementById('tbody-leads')
+    if (leadsEl) {
+      const ld = d.recent_leads || []
+      leadsEl.innerHTML = ld.length
+        ? ld.map((x) =>
+            '<tr class="border-b border-slate-800/60"><td class="py-2 pr-2">' + esc(x.name) + '</td>' +
+            '<td class="pr-2"><code>' + esc(x.contact) + '</code></td>' +
+            '<td class="pr-2">' + esc(x.company || '—') + '</td>' +
+            '<td class="pr-2 text-slate-500 max-w-[180px] truncate">' + esc(x.surfaces || '—') + '</td>' +
+            '<td class="pr-2">' + statusBadge(x.status) + '</td>' +
+            '<td class="pr-2 text-slate-500">' + esc(x.created_at) + '</td></tr>').join('')
+        : '<tr><td colspan="6" class="py-3 text-slate-500">Belum ada lead.</td></tr>'
+    }
   } catch (e) {
     document.getElementById('tbody-invoices').innerHTML =
       '<tr><td colspan="4" class="py-3 text-rose-400">Gagal memuat: ' + esc(e.message) + '</td></tr>'

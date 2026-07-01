@@ -501,11 +501,24 @@ app.get('/api/stats', async (c) => {
      FROM fanout_log ORDER BY id DESC LIMIT 20`
   ).all()
 
+  // R6-4 Sovereign AgentShield intake leads (read-only, additive). Guarded so
+  // a missing `leads` table (older DB) never breaks the existing stats payload.
+  let recentLeads: any = { results: [] }
+  try {
+    recentLeads = await db.prepare(
+      `SELECT id, source, name, contact, company, surfaces, status, created_at
+       FROM leads ORDER BY id DESC LIMIT 20`
+    ).all()
+  } catch (_e) {
+    recentLeads = { results: [] }
+  }
+
   return c.json({
     summary: summary || {},
     recent_invoices: recentInvoices.results || [],
     recent_callbacks: recentCallbacks.results || [],
-    recent_fanout: recentFanout.results || []
+    recent_fanout: recentFanout.results || [],
+    recent_leads: recentLeads.results || []
   })
 })
 

@@ -56,6 +56,18 @@ export function AdminDashboard() {
             </table>
           </div>
         </section>
+
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 lg:col-span-2">
+          <h2 class="font-semibold mb-3"><i class="fas fa-user-shield text-amber-400 mr-2"></i>Leads AgentShield <span class="text-xs text-slate-500 font-normal">(intake /security-audit)</span></h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead class="text-slate-500 text-left border-b border-slate-800">
+                <tr><th class="py-2 pr-2">Nama</th><th class="pr-2">Kontak</th><th class="pr-2">Perusahaan</th><th class="pr-2">Surfaces</th><th class="pr-2">Status</th><th class="pr-2">Waktu</th></tr>
+              </thead>
+              <tbody id="tbody-leads" class="text-slate-300"><tr><td colspan={6} class="py-3 text-slate-500">Memuat…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
       </div>
 
       <script src="/static/admin.js"></script>
