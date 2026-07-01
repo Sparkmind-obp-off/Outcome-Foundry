@@ -77,13 +77,35 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-07-01 (SSOT canonical tree + Batch 10 Launch-From-Zero ditambahkan)
+- **Last Updated**: 2026-07-01 (Agentic OS layer FOUNDRY-MASTER + context-injection skill ditambahkan)
 
 ## Canonical Docs (SSOT)
 **Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
 
 **Wajib baca (jangkar kebenaran):**
 - [`docs/ssot/CODEBASE-TRUTH-RECONCILIATION.md`](docs/ssot/CODEBASE-TRUTH-RECONCILIATION.md) — rekonsiliasi "dua codebase"; **kode live selalu menang** (D-1 Truth-Lock).
+
+## Agentic OS — FOUNDRY-MASTER (cara boot setiap sesi kerja) ⭐
+
+> Lapisan **PROSES** (bukan fitur produk): cara mem-**boot**, **handoff**, **sprint**, & **resume**
+> setiap sesi build agar konteks & doctrine tidak pernah hilang antar-sesi. Diadaptasi dari repo
+> saudara `Barberkas-foundry/docs/ssot/foundry-master` ke repo LIVE ini (D-1 Truth-Lock).
+
+- **Peta lapisan:** [`docs/ssot/foundry-master/FM-00-INDEX.md`](docs/ssot/foundry-master/FM-00-INDEX.md)
+- **FM-01 Master-Architect-Prompt** — 1 prompt induk boot agent (peran, 6 hard-constraint, urutan, gate).
+- **FM-02 Master-Handoff** — template serah-terima per-sesi (`handoffs/HANDOFF-OF-*.md`).
+- **FM-03 Master-Sprint-Kas** — sprint credit-aware (scope, OMTM, anggaran kredit, exit-gate).
+- **FM-04 Resume-Boot** + [`resume_boot.py`](docs/ssot/foundry-master/resume_boot.py) — resume keadaan repo 1 perintah (zero-dep).
+- **Skill boot** — [`skills/sovereign-outcome-foundry-context-injection/`](skills/sovereign-outcome-foundry-context-injection/) (inject doctrine + peta SSOT + route live).
+
+**Cara pakai di sesi berikutnya (3 langkah):**
+```bash
+# 1) Tempel Snippet B (MASTER-ARCHITECT-PROMPT) dari:
+#    skills/sovereign-outcome-foundry-context-injection/references/inject-snippet.md
+# 2) Resume keadaan repo:
+python3 docs/ssot/foundry-master/resume_boot.py --check-live
+# 3) Baca handoff terbaru → tulis SPRINT-KAS (FM-03) → eksekusi → tutup dgn HANDOFF (FM-02) + push.
+```
 
 **Batch kanonik terbaru:**
 - **Batch 4** `docs/ssot/batch-4-repositioning/` — repositioning "Skill Mart" → "Outcome Foundry".
