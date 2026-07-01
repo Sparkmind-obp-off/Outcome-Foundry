@@ -11,6 +11,9 @@ import { Home } from './views/home'
 import { FoundryCatalog } from './views/foundry'
 import { CheckoutPage } from './views/checkout'
 import { AdminDashboard } from './views/admin'
+import { AboutPage } from './views/about'
+import { LegalPage } from './views/legal'
+import { PricingPage } from './views/pricing'
 import { OFFERS } from './data/offers'
 
 type Bindings = {
@@ -368,6 +371,49 @@ app.get('/admin', (c) => {
   return c.render(<AdminDashboard />, { title: 'Foundry Admin · SparkMind X' })
 })
 
+// ---------------------------------------------------------------------------
+// Trust / legal / discoverability pages (CT-2, CT-3, CT-4)
+// SSR, additive, tidak menyentuh engine MoR.
+// ---------------------------------------------------------------------------
+app.get('/about', (c) => {
+  return c.render(<AboutPage />, { title: 'Tentang · Outcome Foundry' })
+})
+
+app.get('/legal', (c) => {
+  return c.render(<LegalPage />, { title: 'Ketentuan & Privasi · Outcome Foundry' })
+})
+
+app.get('/pricing', (c) => {
+  return c.render(<PricingPage />, { title: 'Harga · Outcome Foundry' })
+})
+
+// robots.txt — arahkan crawler + tunjuk sitemap
+app.get('/robots.txt', (c) => {
+  const base = obpBaseUrl(c.env, c.req.url)
+  const body = `User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Sitemap: ${base}/sitemap.xml
+`
+  return c.text(body, 200, { 'Content-Type': 'text/plain; charset=utf-8' })
+})
+
+// sitemap.xml — hanya route publik nyata (Truth-Lock: bukan klaim route yang tak ada)
+app.get('/sitemap.xml', (c) => {
+  const base = obpBaseUrl(c.env, c.req.url)
+  const paths = ['/', '/foundry', '/pricing', '/checkout', '/about', '/legal']
+  const urls = paths
+    .map((p) => `  <url><loc>${base}${p}</loc></url>`)
+    .join('\n')
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`
+  return c.body(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
 // ===========================================================================
 // API: offer catalog (Outcome Foundry SKUs)
 // ===========================================================================
@@ -424,5 +470,86 @@ app.get('/api/health', (c) => c.json({
   duitku_env: c.env.DUITKU_ENV || 'unset',
   configured: !!(c.env.DUITKU_MERCHANT_CODE && c.env.DUITKU_API_KEY)
 }))
+
+// ---------------------------------------------------------------------------
+// CT-1: clean 404 + safe 500 (no route-not-matched crash, no info leak).
+// API/JSON paths get JSON; everything else gets a branded SSR page.
+//
+// NOTE: notFound/onError run OUTSIDE the jsxRenderer middleware chain, so we
+// return self-contained HTML with an EXPLICIT status code (not c.render).
+// ---------------------------------------------------------------------------
+function wantsJson(path: string): boolean {
+  return path.startsWith('/api/') || path.startsWith('/webhooks/')
+}
+
+function errorShell(title: string, bodyHtml: string): string {
+  return `<!DOCTYPE html><html lang="id"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex"/>
+<title>${title}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur">
+  <nav class="max-w-6xl mx-auto px-4 h-14 flex items-center" aria-label="Navigasi utama">
+    <a href="/" class="flex items-center gap-2 font-bold tracking-tight">
+      <i class="fas fa-bolt text-amber-400"></i><span>SparkMind&nbsp;X</span>
+      <span class="hidden sm:inline text-[11px] font-medium text-slate-500 border-l border-slate-700 pl-2 ml-1">Outcome Foundry</span>
+    </a>
+  </nav>
+</header>
+<div class="flex-1 flex items-center justify-center">${bodyHtml}</div>
+<footer class="border-t border-slate-800/80">
+  <div class="max-w-6xl mx-auto px-4 py-6 text-xs text-slate-500 flex flex-wrap gap-x-4 gap-y-1 items-center justify-center">
+    <a href="/" class="hover:text-amber-300">Beranda</a>
+    <a href="/pricing" class="hover:text-amber-300">Harga</a>
+    <a href="/about" class="hover:text-amber-300">Tentang</a>
+    <a href="/legal" class="hover:text-amber-300">Ketentuan &amp; Privasi</a>
+  </div>
+</footer>
+</body></html>`
+}
+
+function render404(c: any) {
+  const path = new URL(c.req.url).pathname
+  if (wantsJson(path)) {
+    return c.json({ error: 'not_found', path }, 404)
+  }
+  const body = `<main class="max-w-xl mx-auto px-4 py-24 text-center">
+    <div class="text-amber-400 text-5xl font-bold mb-3">404</div>
+    <h1 class="text-2xl font-bold">Halaman tidak ditemukan</h1>
+    <p class="text-slate-400 mt-3">Tautan mungkin sudah berubah. Kembali ke beranda atau lihat katalog outcome.</p>
+    <div class="mt-7 flex flex-wrap gap-3 justify-center">
+      <a href="/" class="px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition"><i class="fas fa-house mr-2"></i>Beranda</a>
+      <a href="/foundry" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-200 font-semibold hover:bg-slate-900 transition"><i class="fas fa-industry mr-2"></i>Katalog</a>
+    </div>
+  </main>`
+  return c.html(errorShell('404 · Outcome Foundry', body), 404)
+}
+
+// Explicit catch-all runs INSIDE the middleware chain, so the renderer finalizes
+// cleanly and unmatched routes return a proper 404 (not a 500 crash). This is the
+// definitive fix for CT-1 (route-not-matched → HTTP 500).
+app.all('*', (c) => render404(c))
+
+app.notFound((c) => render404(c))
+
+app.onError((err, c) => {
+  // Log server-side only; never leak internals to the client.
+  console.error('[onError]', err)
+  const path = new URL(c.req.url).pathname
+  if (wantsJson(path)) {
+    return c.json({ error: 'internal_error' }, 500)
+  }
+  const body = `<main class="max-w-xl mx-auto px-4 py-24 text-center">
+    <div class="text-amber-400 text-5xl font-bold mb-3">500</div>
+    <h1 class="text-2xl font-bold">Ada gangguan sementara</h1>
+    <p class="text-slate-400 mt-3">Sistem kami sedang bermasalah. Silakan coba lagi beberapa saat lagi.</p>
+    <div class="mt-7"><a href="/" class="px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition"><i class="fas fa-house mr-2"></i>Kembali ke Beranda</a></div>
+  </main>`
+  return c.html(errorShell('Gangguan · Outcome Foundry', body), 500)
+})
 
 export default app

@@ -1,6 +1,14 @@
 import { jsxRenderer } from 'hono/jsx-renderer'
 
-export const renderer = jsxRenderer(({ children, title }) => {
+// Type the extra props accepted by c.render(node, props) so `{ title }` is
+// recognized by TypeScript (Hono jsx-renderer augmentation).
+declare module 'hono' {
+  interface ContextRenderer {
+    (content: string | Promise<string>, props?: { title?: string }): Response | Promise<Response>
+  }
+}
+
+export const renderer = jsxRenderer(({ children, title }: { children?: any; title?: string }) => {
   return (
     <html lang="id">
       <head>
@@ -25,20 +33,26 @@ export const renderer = jsxRenderer(({ children, title }) => {
             </a>
             <div class="flex items-center gap-1 text-sm">
               <a href="/foundry" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Katalog</a>
+              <a href="/pricing" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Harga</a>
+              <a href="/about" class="hidden sm:inline px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Tentang</a>
               <a href="/checkout" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Checkout</a>
-              <a href="/admin" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-amber-300 hover:bg-slate-900 transition">Admin</a>
             </div>
           </nav>
         </header>
         <div class="flex-1">{children}</div>
         <footer class="border-t border-slate-800/80 mt-12">
-          <div class="max-w-6xl mx-auto px-4 py-6 text-xs text-slate-500 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <div class="max-w-6xl mx-auto px-4 py-6 text-xs text-slate-500 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <p>
               <strong class="text-slate-400">SparkMind X · Outcome Foundry</strong> — pabrik hasil bisnis untuk UMKM Indonesia.
             </p>
-            <p>
-              Pembayaran oleh <strong class="text-slate-400">Oasis BI Pro</strong> (Merchant-of-Record) · rel PJP <strong class="text-slate-400">Duitku</strong> terdaftar Bank Indonesia.
-            </p>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <a href="/about" class="hover:text-amber-300">Tentang</a>
+              <a href="/pricing" class="hover:text-amber-300">Harga</a>
+              <a href="/legal" class="hover:text-amber-300">Ketentuan &amp; Privasi</a>
+              <span class="inline-flex items-center gap-1 text-slate-400">
+                <i class="fas fa-shield-halved text-amber-400/80"></i> Pembayaran aman · QRIS/VA · terdaftar BI
+              </span>
+            </div>
           </div>
         </footer>
       </body>

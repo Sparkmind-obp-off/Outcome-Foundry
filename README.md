@@ -77,7 +77,7 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-07-01 (Agentic OS layer FOUNDRY-MASTER + context-injection skill ditambahkan)
+- **Last Updated**: 2026-07-01 (CT-1..CT-4 resolved: notFound/onError + `/about` `/legal` `/pricing` + `/robots.txt` `/sitemap.xml`; renderer typing fixed → build hijau + `tsc` 0 error)
 
 ## Canonical Docs (SSOT)
 **Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
