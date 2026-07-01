@@ -77,10 +77,24 @@ pm2 start ecosystem.config.cjs        # http://localhost:3000
 - **Tech Stack**: Hono + TypeScript + Cloudflare Pages/Workers + D1 + TailwindCSS (CDN).
 - **D1 (remote)**: `outcome-foundry-production` (`b54d0928-…`).
 - **GitHub**: https://github.com/Sparkmind-obp-off/Outcome-Foundry
-- **Last Updated**: 2026-06-24
+- **Last Updated**: 2026-07-01 (SSOT canonical tree + Batch 10 Launch-From-Zero ditambahkan)
 
 ## Canonical Docs (SSOT)
-- `docs/OUTCOME-FOUNDRY-X-OBP-SSOT.md` — **SSOT tunggal**: Outcome Foundry (B4/B5) + OBP MoR rail.
+**Titik masuk tunggal:** [`docs/ssot/00-SSOT-CANONICAL-INDEX.md`](docs/ssot/00-SSOT-CANONICAL-INDEX.md) — peta lengkap semua batch.
+
+**Wajib baca (jangkar kebenaran):**
+- [`docs/ssot/CODEBASE-TRUTH-RECONCILIATION.md`](docs/ssot/CODEBASE-TRUTH-RECONCILIATION.md) — rekonsiliasi "dua codebase"; **kode live selalu menang** (D-1 Truth-Lock).
+
+**Batch kanonik terbaru:**
+- **Batch 4** `docs/ssot/batch-4-repositioning/` — repositioning "Skill Mart" → "Outcome Foundry".
+- **Batch 5** `docs/ssot/batch-5-outcome-foundry/` — model bisnis OaaS + delivery engine (framing kanonik).
+- **Batch 8** `docs/ssot/batch-8-ecc-reference/` — ECC reference + roadmap upgrade R6.
+- **Batch 9 / Standards** `docs/ssot/standards/` — skill-authoring, eval-loop, AgentShield SKU spec.
+- **Batch 10** `docs/ssot/batch-10-launch-zero/` ⭐ — **Launch From Zero**: secret doctrine, strategi 90 hari,
+  GTM 0-follower, toolkit konten free-tier no-CC, kalender konten 30 hari + funnel VSL faceless.
+
+**Root SSOT (produk live):**
+- `docs/OUTCOME-FOUNDRY-X-OBP-SSOT.md` — SSOT tunggal: Outcome Foundry (B4/B5) + OBP MoR rail.
 - `docs/DUITKU-MOR-CANONICAL-SSOT.md` — teknis: 1 merchant code → MoR multi-brand.
 - `docs/OBP-MOR-ECOSYSTEM-SSOT.md` — strategis: OBP sbg real MoR ekosistem.
 
